@@ -30,7 +30,8 @@ public partial class Coin : Area3D
 
 	private void OnBodyEntered(Node3D body)
 	{
-		if (body is Player)
+		GD.Print(body);
+		if (body.IsInGroup("Player"))
 		{
 			GameManager.Instance?.AddScore();
 			QueueFree();

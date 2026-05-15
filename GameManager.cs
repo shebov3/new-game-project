@@ -4,10 +4,10 @@ using System;
 public partial class GameManager : Node
 {
 	public static GameManager Instance { get; private set; }
-
-	[Export] public int TotalCoins = 10;
+	
+	[Export] public int TotalCoins = 20;
 	[Export] public float GameTime = 60.0f;
-
+	[Export] public float TimeAddedPerCoin = 3.0f;
 	public int Score { get; private set; } = 0;
 	public float TimeRemaining { get; private set; }
 	public bool IsGameOver { get; private set; } = false;
@@ -39,15 +39,15 @@ public partial class GameManager : Node
 		gameOverSfx.VolumeDb = -3.0f;
 		AddChild(gameOverSfx);
 
-		CallDeferred(nameof(SpawnCoins));
+		CallDeferred(nameof(SpawnCoins), TotalCoins);
 	}
 
-	private void SpawnCoins()
+	private void SpawnCoins(int Coins)
 	{
 		var coinScene = GD.Load<PackedScene>("res://coin.tscn");
-		float platformHalfSize = 42.0f;
+		float platformHalfSize = 90.0f;
 
-		for (int i = 0; i < TotalCoins; i++)
+		for (int i = 0; i < Coins; i++)
 		{
 			var coin = coinScene.Instantiate<Node3D>();
 			float x = rng.RandfRange(-platformHalfSize, platformHalfSize);
@@ -56,7 +56,7 @@ public partial class GameManager : Node
 			GetTree().CurrentScene.AddChild(coin);
 		}
 
-		EmitSignal(SignalName.ScoreChanged, Score, TotalCoins);
+		EmitSignal(SignalName.ScoreChanged, Score, Coins);
 		EmitSignal(SignalName.TimerUpdated, TimeRemaining);
 	}
 
@@ -77,7 +77,7 @@ public partial class GameManager : Node
 	public void AddScore()
 	{
 		if (IsGameOver || IsGameWon) return;
-
+		TimeRemaining += TimeAddedPerCoin;
 		Score++;
 		coinSfx?.Play();
 		EmitSignal(SignalName.ScoreChanged, Score, TotalCoins);

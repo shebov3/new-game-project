@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://mgp02mkor0at"]
 
-[ext_resource type="Script" uid="uid://c64x4nraolwve" path="res://Player.cs" id="1_a202f"]
 [ext_resource type="Material" uid="uid://bkblq1omlai4l" path="res://grass.tres" id="1_r3fl7"]
 [ext_resource type="Script" uid="uid://c4ocng8asthkw" path="res://GameManager.cs" id="2_gm"]
 [ext_resource type="Script" uid="uid://dqf6jj6kqqnje" path="res://HUD.cs" id="3_hud"]
+[ext_resource type="PackedScene" uid="uid://bgkmxyw21pc1m" path="res://addons/PlayerCharacter/player_character_scene.tscn" id="4_r3fl7"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_a202f"]
 energy_multiplier = 8.61
@@ -30,7 +30,7 @@ dof_blur_amount = 0.2
 material = ExtResource("1_r3fl7")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_a202f"]
-size = Vector3(100, 1, 100)
+size = Vector3(200, 1, 200)
 
 [sub_resource type="BoxMesh" id="BoxMesh_r3fl7"]
 
@@ -43,31 +43,6 @@ size = Vector3(2.6027026, 8.304635, 2.2434385)
 [sub_resource type="BoxShape3D" id="BoxShape3D_i5arm"]
 size = Vector3(2.6027026, 8.304635, 32.614822)
 
-[sub_resource type="Gradient" id="Gradient_a202f"]
-colors = PackedColorArray(0.78493977, 0.24196929, 0.43481755, 1, 1, 1, 1, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_noarx"]
-frequency = 0.0141
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_a0tk4"]
-noise = SubResource("FastNoiseLite_noarx")
-color_ramp = SubResource("Gradient_a202f")
-seamless = true
-seamless_blend_skirt = 1.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r3fl7"]
-albedo_color = Color(1, 0.27831125, 0.37676585, 1)
-albedo_texture = SubResource("NoiseTexture2D_a0tk4")
-metallic = 0.58
-metallic_texture_channel = 1
-roughness = 0.3
-
-[sub_resource type="SphereMesh" id="SphereMesh_jka67"]
-material = SubResource("StandardMaterial3D_r3fl7")
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_i5arm"]
-radius = 0.52301943
-
 [node name="Node3D" type="Node3D" unique_id=1071648679]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2144574420]
@@ -78,7 +53,7 @@ camera_attributes = SubResource("CameraAttributesPractical_a202f")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9376781, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=784564228]
-transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
+transform = Transform3D(200, 0, 0, 0, 1, 0, 0, 0, 200, 0, 0, 0)
 mesh = SubResource("BoxMesh_4xowi")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1866104203]
@@ -118,30 +93,13 @@ shape = SubResource("BoxShape3D_i5arm")
 transform = Transform3D(0.09247491, 0.72564286, 0.6818291, 0, -0.6847633, 0.7287656, 0.995715, -0.067392536, -0.06332342, 0.5107014, 4.2851496, -7.8442206)
 shadow_enabled = true
 
-[node name="Player" type="CharacterBody3D" parent="." unique_id=1164120155]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0249594, 0)
-script = ExtResource("1_a202f")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Player" unique_id=1602713600]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.44863892, 0)
-mesh = SubResource("SphereMesh_jka67")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=113392977]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0.4584149, 0)
-shape = SubResource("SphereShape3D_i5arm")
-
-[node name="CameraOrigin" type="Node3D" parent="Player" unique_id=1867563748]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48762107, 0)
-
-[node name="SpringArm3D" type="SpringArm3D" parent="Player/CameraOrigin" unique_id=887697168]
-spring_length = 4.0
-margin = 0.5
-
-[node name="Camera3D" type="Camera3D" parent="Player/CameraOrigin/SpringArm3D" unique_id=373030258]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.968273)
-
 [node name="GameManager" type="Node" parent="." unique_id=1961805826]
 script = ExtResource("2_gm")
+TimeAddedPerCoin = 1.0
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2076596733]
 script = ExtResource("3_hud")
+
+[node name="PlayerCharacter" parent="." unique_id=841616460 instance=ExtResource("4_r3fl7")]
+
+[connection signal="ScoreChanged" from="GameManager" to="PlayerCharacter" method="_on_game_manager_score_changed"]
